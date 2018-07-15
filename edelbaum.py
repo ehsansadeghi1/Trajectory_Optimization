@@ -16,7 +16,7 @@ req = 6378.136    # earth equatorial radius (kilometers)
 # =============================================================================
 h_0 = 7000-req   # Km
 h_f = 42166-req  # Km
-inc_0 = 28.5     # Degrees
+inc_0 = 90     # Degrees
 inc_f = 0        # Degrees
 f = 3.5e-7       # km/sec^2
 # =============================================================================
@@ -31,6 +31,7 @@ d_inc = abs(inc_f-inc_0)
 beta0 = atan2(sin(0.5*pi*d_inc), (V_0/V_f)-cos(0.5*pi*d_inc))
 "Total delta_V"
 dV_t = V_0*cos(beta0)-V_0*sin(beta0)/tan(0.5*pi*d_inc+beta0)
+print("Total Delta-V = ", dV_t, "Km/sec")
 "Flight Time"
 f_time = dV_t/f
 if f_time < 3600:
@@ -47,14 +48,14 @@ else:
     # Days
     tdflag = 3
     f_time = f_time/86400
-    print(f_time, "Days")
+    print("Time of Flight = ", f_time, "Days")
 # =============================================================================
 dt = f_time/100
 t_ = -dt
 t = []
 beta = []
-V_ = []
-a_ = []
+V = []
+a = []
 i_ = []
 for i in range(0, 101):
     t_ += dt
@@ -65,14 +66,15 @@ for i in range(0, 101):
     else:
         tsec = t_*86400
     t.append(t_)
-    beta.append(degrees(atan2(V_0*sin(beta0), (V_f*cos(beta0)-f*tsec))))
-    V = (sqrt(V_0*V_0-2*V_0*f*tsec*cos(beta0)+f*f*tsec*tsec))
-    a = (mu / (V * V))/1000
+    beta_ = degrees(atan2(V_0*sin(beta0), (V_0*cos(beta0)-f*tsec)))
+    V_ = sqrt(V_0**2-2*V_0*f*tsec*cos(beta0)+f**2*tsec**2)
+    a_ = (mu/(V_*V_))/1000
     tmp1 = atan((f * tsec - V_0 * cos(beta0))/(V_0 * sin(beta0)))
-    dinc = degrees((2/pi)*(tmp1 + 0.5 * pi - beta0))
-    i = degrees(inc_0)-dinc
-    V_.append(V)
-    a_.append(a)
+    di = degrees((2/pi)*(tmp1 + 0.5 * pi - beta0))
+    i = degrees(inc_0)-di
+    beta.append(beta_)
+    V.append(V_)
+    a.append(a_)
     i_.append(i)
 # =============================================================================
 fig, ax1 = plt.subplots()
@@ -81,7 +83,12 @@ ax1.set_xlabel('Time')
 ax1.set_ylabel('Inclination (Degrees)', color='b')
 ax1.tick_params('y', colors='b')
 ax2 = ax1.twinx()
-ax2.plot(t, V_, 'r--')
+ax2.plot(t, V, 'r--')
 ax2.set_ylabel('Velocity, Km/sec', color='r')
 ax2.tick_params('y', colors='r')
+plt.show()
+plt.figure()
+plt.plot(t, a)
+plt.xlabel("Time")
+plt.ylabel("Semi-Major Axis, Km")
 plt.show()
