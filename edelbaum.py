@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Edelbaum theory, reformulated by Kéchichian.
-References
+Edelbaum Low-Thrust Orbit Transfer, reformulated by Kéchichian.
 ----------
 * Edelbaum, T. N. "Propulsion Requirements for Controllable
   Satellites", 1961.
@@ -77,12 +76,12 @@ for i in range(0, 101):
     i_.append(i)
 # =============================================================================
 fig, ax1 = plt.subplots()
-ax1.plot(t, i_, 'b-')
+ax1.plot(t, i_, 'b')
 ax1.set_xlabel('Time')
 ax1.set_ylabel('Inclination (Degrees)', color='b')
-#ax1.tick_params('y', colors='b')
+ax1.tick_params('y', colors='b')
 ax2 = ax1.twinx()
-ax2.plot(t, V_, 'r.')
-ax2.set_ylabel('Velocity', color='r')
-#ax2.tick_params('y', colors='r')
+ax2.plot(t, V_, 'r--')
+ax2.set_ylabel('Velocity, Km/sec', color='r')
+ax2.tick_params('y', colors='r')
 plt.show()
